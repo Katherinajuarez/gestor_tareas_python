@@ -1,51 +1,57 @@
-# Gestor de tareas (Python)
+# Gestor de Tareas en Terminal (Python - Versión POO)
 
 ## Descripción
 Este proyecto es una aplicación interactiva desarrollada en Python para ejecutarse directamente en la terminal. Forma parte del trabajo final para la certificación del curso de Python Inicial.
 
-El objetivo principal es aplicar los conceptos fundamentales de programación mediante la planificación e implementación del modelo **Entrada–Proceso–Salida (EPS)**, logrando un sistema modular que permite administrar tareas pendientes y persistir la información en un archivo de texto local.
+El objetivo principal es planificar e implementar un proyecto utilizando el modelo **Entrada–Proceso–Salida (EPS)**, incorporando los conceptos fundamentales del lenguaje junto con una introducción a la **Programación Orientada a Objetos (POO)** para lograr una arquitectura modular, escalable y mantenible.
 
 ---
 
 ## Características
-* **Menú interactivo:** Navegación sencilla basada en consola para seleccionar acciones.
-* **Gestión de tareas:** Permite agregar tareas con título y categoría/prioridad, así como listarlas y marcarlas como completadas.
-* **Validación de datos:** Control de errores mediante bloques `try/except` y validación de texto para asegurar que la categoría no contenga dígitos numéricos.
-* **Persistencia de datos:** Lectura y escritura automática en un archivo `.txt` con formato descriptivo (`titulo: ..., categoria: ..., completada: ...`).
+* **Modelo Orientado a Objetos:** Separación clara de responsabilidades entre el modelo de datos (`Tarea`) y la lógica de administración (`GestorTareas`).
+* **Menú interactivo:** Navegación en consola para la gestión fluida de tareas.
+* **Persistencia de datos:** Lectura y escritura en un archivo `.txt` local con un formato descriptivo e identificadores explícitos.
+* **Validación de entradas:** Control de errores de formato (restricción de dígitos numéricos en la categoría) y manejo seguro de datos numéricos.
+* **Manejo de excepciones:** Prevención de caídas del programa ante la ausencia del archivo de datos o entradas inválidas del usuario.
 
 ---
 
 ## Modelo EPS (Entrada–Proceso–Salida)
 
 ### 1. Entrada
-* Opciones del menú interactivo elegidas por el usuario.
-* Título de la tarea y categoría (restringida a texto sin números).
-* Número entero correspondiente al índice de la tarea para actualizar su estado.
-* Datos cargados desde el archivo local `tareas.txt`.
+* **Interfaz de usuario (`input()`):**
+  * Opción seleccionada del menú principal (1 al 5).
+  * Título de la tarea y categoría/prioridad (validada solo para letras).
+  * Índice entero de la tarea a completar.
+* **Almacenamiento externo:**
+  * Lectura del archivo `tareas.txt` con formato: `titulo: <texto>, categoria: <texto>, completada: <True/False>`.
 
 ### 2. Proceso
-* Manejo de la navegación del sistema mediante un bucle `while`.
-* Lectura y procesamiento de texto (`.split()` y `.strip()`) para reconstruir los datos desde el archivo.
-* Almacenamiento de cada tarea en un diccionario (`"titulo"`, `"categoria"`, `"completada"`) agrupados dentro de una lista general.
-* Recorrido de listas mediante ciclos `for` por índice (`range(len(...))`).
-* Validación mediante la función auxiliar `tiene_numeros()` para verificar el formato de la categoría.
-* Control de excepciones mediante `try/except` ante errores de entrada o la falta del archivo inicial.
+* **Modelado con POO:**
+  * **Clase `Tarea`:** Encapsula el título, la categoría y el estado de la tarea. Incluye métodos para cambiar estado (`marcar_completada()`), consultar estado formateado (`obtener_estado_texto()`) y convertir el objeto a texto para archivo (`a_linea_archivo()`).
+  * **Clase `GestorTareas`:** Administra la lista de objetos `Tarea` (`self.lista_tareas`), controlando la carga, guardado, alta y actualización de tareas.
+* **Procesamiento de archivos:**
+  * Parseo de cadenas mediante `.split(",")`, `.split(":")` y `.strip()` para reconstruir e instanciar cada objeto `Tarea`.
+* **Validaciones y Control de flujo:**
+  * Función auxiliar `tiene_numeros()` con recorrido `for` para validar cadenas.
+  * Ciclo `while` en `main()` para el menú interactivo y condicionales `if-elif-else` para invocar métodos del gestor.
+* **Excepciones:**
+  * Bloques `try/except` para manejar la falta del archivo de datos o errores al ingresar números enteros.
 
 ### 3. Salida
-* Visualización en pantalla del menú y del listado numerado de tareas con su estado (`[Pendiente]` o `[Completada]`).
-* Mensajes informativos de confirmación o advertencia de errores.
-* Actualización y guardado automático en el archivo de texto `tareas.txt`.
+* **Consola (`print()`):**
+  * Menú principal y listado numerado de tareas con estado (`[Pendiente]` o `[Completada]`).
+  * Mensajes de confirmación y de error detallados.
+* **Almacenamiento externo:**
+  * Escritura/actualización del archivo `tareas.txt` guardando cada tarea en una línea estructurada.
 
 ---
 
-## Estructura del código
-El programa está estructurado en funciones modulares para garantizar la claridad y orden:
+## Arquitectura de Clases
 
-* `mostrar_menu()`: Muestra las opciones principales.
-* `cargar_tareas(nombre_archivo)`: Carga los datos del archivo local al iniciar.
-* `guardar_tareas(nombre_archivo, lista_tareas)`: Escribe el estado actual de las tareas en el archivo.
-* `mostrar_tareas(lista_tareas)`: Imprime en consola la lista numerada.
-* `tiene_numeros(texto)`: Función de validación de caracteres.
-* `agregar_tarea(lista_tareas)`: Solicita, valida e inserta una nueva tarea.
-* `marcar_completada(lista_tareas)`: Cambia el estado de una tarea a completada.
-* `main()`: Controla el flujo general de la aplicación.
+* `Tarea`: Representa una entidad de tarea individual.
+  * Atributos: `titulo`, `categoria`, `completada`.
+  * Métodos: `marcar_completada()`, `obtener_estado_texto()`, `a_linea_archivo()`.
+* `GestorTareas`: Administra la colección de tareas y la persistencia.
+  * Atributos: `nombre_archivo`, `lista_tareas`.
+  * Métodos: `cargar_tareas()`, `guardar_tareas()`, `mostrar_tareas()`, `agregar_tarea()`, `marcar_completada()`.
